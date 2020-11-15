@@ -58,14 +58,15 @@ jobs:
             mkdir -p ~/test-results/jacoco/
             find . -type f -regex ".*/target/jacoco-reports/.*xml" -exec cp {} ~/test-results/jacoco/ \;
           when: always
+      - codecov/upload:
+          file: ~/test-results/jacoco/jacoco.xml
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results
       - store_artifacts:
           path: target/jacoco-reports
-      - codecov/upload:
-          file: ${CIRCLE_WORKING_DIRECTORY}/test-results/jacoco/jacoco.xml
+
 
   publish-docker:
     docker:
