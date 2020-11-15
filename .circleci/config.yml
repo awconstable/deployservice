@@ -65,7 +65,7 @@ jobs:
       - store_artifacts:
           path: target/jacoco-reports
       - codecov/upload:
-          file: ~/test-results/jacoco/jacoco.xml
+          file: ${working_directory}/test-results/jacoco/jacoco.xml
 
   publish-docker:
     docker:
