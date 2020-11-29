@@ -34,3 +34,6 @@ hs_err_pid*
 
 # Vagrant
 .vagrant
+
+# ssl
+*.p12
