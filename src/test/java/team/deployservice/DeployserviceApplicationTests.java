@@ -1,10 +1,9 @@
 package team.deployservice;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class DeployserviceApplicationTests {
+class DeployserviceApplicationTests extends MongoDBContainerTest
+    {
 
 	@Test
 	void contextLoads() {

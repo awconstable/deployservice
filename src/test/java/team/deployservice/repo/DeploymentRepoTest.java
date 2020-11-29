@@ -3,10 +3,8 @@ package team.deployservice.repo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import team.deployservice.MongoDBContainerTest;
 import team.deployservice.model.Change;
 import team.deployservice.model.Deployment;
 
@@ -20,9 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-@ExtendWith(SpringExtension.class)
-@DataMongoTest
-class DeploymentRepoTest
+class DeploymentRepoTest extends MongoDBContainerTest
     {
     
     @Autowired
