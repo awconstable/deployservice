@@ -21,7 +21,8 @@ docker run --name deployservice -d -p 8080:8080 --network <mongo network> -e spr
   Content-Type: application/json
   
   {
-    "deploymentId": "d1",
+    "deploymentId": "d1",  
+    "deploymentDesc": "deployment d1",
     "applicationId": "a1",
     "componentId": "c1",
     "created": "2020-11-30 23:00:00",

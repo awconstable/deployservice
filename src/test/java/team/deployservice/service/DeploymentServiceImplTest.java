@@ -74,6 +74,7 @@ class DeploymentServiceImplTest
         changes.add(c3);
         d1 = new Deployment(
             "d1",
+            "deployment d1",
             "a1",
             "c1",
             dateOf(2020, 3, 10, 10, 0, 0),

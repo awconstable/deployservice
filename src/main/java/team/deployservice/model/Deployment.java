@@ -11,6 +11,7 @@ public class Deployment
     @Id
     private String id;
     private final String deploymentId;
+    private final String deploymentDesc;
     private final String applicationId;
     private final String componentId;
     private final Date created;
@@ -19,9 +20,10 @@ public class Deployment
     private long leadTimeSeconds;
     private DORALevel leadTimePerfLevel;
 
-    public Deployment(String deploymentId, String applicationId, String componentId, Date created, String source, HashSet<Change> changes)
+    public Deployment(String deploymentId, String deploymentDesc, String applicationId, String componentId, Date created, String source, HashSet<Change> changes)
         {
         this.deploymentId = deploymentId;
+        this.deploymentDesc = deploymentDesc;
         this.applicationId = applicationId;
         this.componentId = componentId;
         this.created = created;
@@ -38,6 +40,8 @@ public class Deployment
         {
         return deploymentId;
         }
+
+    public String getDeploymentDesc() { return deploymentDesc; }
 
     public String getApplicationId()
         {
@@ -108,6 +112,7 @@ public class Deployment
         return "Deployment{" +
             "id='" + id + '\'' +
             ", deploymentId='" + deploymentId + '\'' +
+            ", deploymentDesc='" + deploymentDesc + '\'' +
             ", applicationId='" + applicationId + '\'' +
             ", componentId='" + componentId + '\'' +
             ", created=" + created +

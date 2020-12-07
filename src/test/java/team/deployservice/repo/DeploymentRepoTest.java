@@ -29,7 +29,7 @@ class DeploymentRepoTest extends MongoDBContainerTest
         {
         Change c1 = new Change("c123", Date.from(Instant.now()), "test", "test");
         Change c2 = new Change("c234", Date.from(Instant.now()), "test", "test");
-        Deployment d1 = new Deployment("d123", "a1", "comp1", Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
+        Deployment d1 = new Deployment("d123", "deployment v123", "a1", "comp1", Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
         repo.save(d1);
         }
 
