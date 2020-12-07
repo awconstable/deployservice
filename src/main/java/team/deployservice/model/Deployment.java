@@ -17,6 +17,7 @@ public class Deployment
     private final String source;
     private final HashSet<Change> changes;
     private long leadTimeSeconds;
+    private DORALevel leadTimePerfLevel;
 
     public Deployment(String deploymentId, String applicationId, String componentId, Date created, String source, HashSet<Change> changes)
         {
@@ -73,6 +74,16 @@ public class Deployment
         this.leadTimeSeconds = leadTimeSeconds;
         }
 
+    public DORALevel getLeadTimePerfLevel()
+        {
+        return leadTimePerfLevel;
+        }
+
+    public void setLeadTimePerfLevel(DORALevel leadTimePerfLevel)
+        {
+        this.leadTimePerfLevel = leadTimePerfLevel;
+        }
+
     @Override
     public boolean equals(Object o)
         {
@@ -103,6 +114,7 @@ public class Deployment
             ", source='" + source + '\'' +
             ", changes=" + changes +
             ", leadTimeSeconds=" + leadTimeSeconds +
+            ", leadTimePerfLevel=" + leadTimePerfLevel +
             '}';
         }
     }
