@@ -12,6 +12,7 @@ public class Change
     private final Date created;
     private final String source;
     private final String eventType;
+    private long leadTimeSeconds;
 
     public Change(String id, Date created, String source, String eventType)
         {
@@ -41,6 +42,16 @@ public class Change
         return eventType;
         }
 
+    public long getLeadTimeSeconds()
+        {
+        return leadTimeSeconds;
+        }
+
+    public void setLeadTimeSeconds(long leadTimeSeconds)
+        {
+        this.leadTimeSeconds = leadTimeSeconds;
+        }
+
     @Override
     public boolean equals(Object o)
         {
@@ -63,10 +74,11 @@ public class Change
     public String toString()
         {
         return "Change{" +
-            "changeId='" + id + '\'' +
-            ", createdTimestamp=" + created +
+            "id='" + id + '\'' +
+            ", created=" + created +
             ", source='" + source + '\'' +
             ", eventType='" + eventType + '\'' +
+            ", leadTimeSeconds=" + leadTimeSeconds +
             '}';
         }
     }

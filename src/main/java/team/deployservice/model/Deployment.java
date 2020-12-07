@@ -16,6 +16,7 @@ public class Deployment
     private final Date created;
     private final String source;
     private final HashSet<Change> changes;
+    private long leadTimeSeconds;
 
     public Deployment(String deploymentId, String applicationId, String componentId, Date created, String source, HashSet<Change> changes)
         {
@@ -62,6 +63,16 @@ public class Deployment
         return changes;
         }
 
+    public long getLeadTimeSeconds()
+        {
+        return leadTimeSeconds;
+        }
+
+    public void setLeadTimeSeconds(long leadTimeSeconds)
+        {
+        this.leadTimeSeconds = leadTimeSeconds;
+        }
+
     @Override
     public boolean equals(Object o)
         {
@@ -85,9 +96,13 @@ public class Deployment
         {
         return "Deployment{" +
             "id='" + id + '\'' +
+            ", deploymentId='" + deploymentId + '\'' +
+            ", applicationId='" + applicationId + '\'' +
+            ", componentId='" + componentId + '\'' +
             ", created=" + created +
             ", source='" + source + '\'' +
             ", changes=" + changes +
+            ", leadTimeSeconds=" + leadTimeSeconds +
             '}';
         }
     }
