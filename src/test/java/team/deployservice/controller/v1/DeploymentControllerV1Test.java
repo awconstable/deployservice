@@ -15,6 +15,12 @@ import team.deployservice.repo.DeploymentRepo;
 import team.deployservice.service.DeploymentService;
 import team.deployservice.service.DeploymentServiceImpl;
 
+import java.time.Month;
+import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -103,5 +109,29 @@ class DeploymentControllerV1Test
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
         verify(mockdeploymentRepo, times(1)).findByApplicationId(appId);
+        }
+
+    @Test
+    void calcDeployFreq() throws Exception
+        {
+        LocalDateTime date = LocalDate.now().minusDays(1).atStartOfDay();
+        Date reportingDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        String appId = "a1";
+        mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/frequency")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+        verify(mockdeploymentRepo, times(1)).findByApplicationIdAndCreatedBetweenOrderByCreated(appId, reportingDate, reportingDate);
+        }
+    
+    @Test
+    void calcDeployFreqByDate() throws Exception
+        {
+        LocalDateTime date = LocalDate.of(2020, Month.OCTOBER, 3).atStartOfDay();
+        Date reportingDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        String appId = "a1";
+        mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/frequency/2020-10-03")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+        verify(mockdeploymentRepo, times(1)).findByApplicationIdAndCreatedBetweenOrderByCreated(appId, reportingDate, reportingDate);
         }
     }

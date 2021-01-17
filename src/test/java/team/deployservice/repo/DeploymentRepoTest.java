@@ -9,6 +9,9 @@ import team.deployservice.model.Change;
 import team.deployservice.model.Deployment;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,5 +56,16 @@ class DeploymentRepoTest extends MongoDBContainerTest
         {
         List<Deployment> deploys = repo.findByApplicationId("a1");
         assertThat(deploys.size(), is(equalTo(2)));
+        }
+    
+    @Test
+    public void getAllForDateRange()
+        {
+            LocalDateTime startDateTime = LocalDate.now().atStartOfDay();
+            LocalDateTime endDateTime = LocalDate.now().plusDays(1).atStartOfDay();
+            Date startDate = Date.from(startDateTime.toInstant(ZoneOffset.UTC));
+            Date endDate = Date.from(endDateTime.toInstant(ZoneOffset.UTC));
+            List<Deployment> deploys = repo.findByApplicationIdAndCreatedBetweenOrderByCreated("a1", startDate, endDate);
+            assertThat(deploys.size(), is(equalTo(2)));
         }
     }
