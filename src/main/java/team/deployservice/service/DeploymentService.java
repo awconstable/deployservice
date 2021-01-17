@@ -12,4 +12,6 @@ public interface DeploymentService
         Optional<Deployment> get(String id);
 
         List<Deployment> list();
+        
+        List<Deployment> listAllForApplication(String applicationId);
     }

@@ -69,4 +69,10 @@ public class DeploymentServiceImpl implements DeploymentService
         {
         return deploymentRepo.findAll();
         }
+
+    @Override
+    public List<Deployment> listAllForApplication(String applicationId)
+        {
+        return deploymentRepo.findByApplicationId(applicationId);
+        }
     }

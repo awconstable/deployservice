@@ -94,4 +94,14 @@ class DeploymentControllerV1Test
             .andExpect(status().isOk());
         verify(mockdeploymentRepo, times(1)).findById(id);
         }
+
+    @Test
+    void listByApp() throws Exception
+        {
+        String appId = "id123";
+        mockMvc.perform(get("/api/v1/deployment/application/" + appId)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+        verify(mockdeploymentRepo, times(1)).findByApplicationId(appId);
+        }
     }

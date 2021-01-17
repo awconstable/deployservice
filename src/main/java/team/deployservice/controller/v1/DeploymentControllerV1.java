@@ -40,4 +40,10 @@ public class DeploymentControllerV1
         public Optional<Deployment> show(@PathVariable String id){
             return deploymentService.get(id);
         }
+
+        @GetMapping("/deployment/application/{id}")
+        @ResponseStatus(HttpStatus.OK)
+        public List<Deployment> listForApp(@PathVariable String id){
+            return deploymentService.listAllForApplication(id);
+        }
     }
