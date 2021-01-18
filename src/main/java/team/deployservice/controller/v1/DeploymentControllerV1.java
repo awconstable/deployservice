@@ -6,11 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import team.deployservice.model.Deployment;
 import team.deployservice.model.DeploymentFrequency;
+import team.deployservice.model.LeadTime;
 import team.deployservice.service.DeploymentService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +33,6 @@ public class DeploymentControllerV1
         @PostMapping("/deployment")
         @ResponseStatus(HttpStatus.CREATED)
         public Deployment store(@RequestBody Deployment deployment){
-            System.out.println(deployment);
             return deploymentService.store(deployment);
         }
 
@@ -56,8 +57,8 @@ public class DeploymentControllerV1
         @GetMapping("/deployment/application/{id}/frequency")
         @ResponseStatus(HttpStatus.OK)
         public DeploymentFrequency calculateDeployFreq(@PathVariable String id){
-            LocalDateTime date = LocalDate.now().minusDays(1).atStartOfDay();        
-            Date reportingDate = Date.from(date.toInstant(ZoneOffset.UTC));
+            ZonedDateTime date = LocalDate.now().minusDays(1).atStartOfDay(ZoneOffset.UTC);        
+            Date reportingDate = Date.from(date.toInstant());
             return deploymentService.calculateDeployFreq(id, reportingDate);
         }
     
@@ -65,5 +66,19 @@ public class DeploymentControllerV1
         @ResponseStatus(HttpStatus.OK)
         public DeploymentFrequency calculateDeployFreq(@PathVariable String id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
             return deploymentService.calculateDeployFreq(id, date);
+        }
+
+        @GetMapping("/deployment/application/{id}/lead_time")
+        @ResponseStatus(HttpStatus.OK)
+        public LeadTime calculateLeadTime(@PathVariable String id){
+            ZonedDateTime date = LocalDate.now().minusDays(1).atStartOfDay(ZoneOffset.UTC);
+            Date reportingDate = Date.from(date.toInstant());
+            return deploymentService.calculateLeadTime(id, reportingDate);
+        }
+    
+        @GetMapping("/deployment/application/{id}/lead_time/{date}")
+        @ResponseStatus(HttpStatus.OK)
+        public LeadTime calculateLeadTime(@PathVariable String id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
+            return deploymentService.calculateLeadTime(id, date);
         }
     }

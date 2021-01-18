@@ -20,7 +20,6 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -164,8 +163,8 @@ class DeploymentServiceImplTest
         deploys.add(d2);
         when(mockdeploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated
             ("a1", 
-                dateOf(2020, 3, 9, 0, 0, 0), 
-                dateOf(2020, 3, 10, 0, 0, 0)))
+                dateOf(2020, 3, 10, 0, 0, 0), 
+                dateOf(2020, 3, 11, 0, 0, 0)))
             .thenReturn(deploys);
         DeploymentFrequency freq = deploymentService.calculateDeployFreq("a1", dateOf(2020, 3, 10, 0, 0, 0));
         assertThat(freq.getDeployFreqLevel(), equalTo(DORALevel.ELITE));
@@ -183,8 +182,8 @@ class DeploymentServiceImplTest
         deploys.add(d2);
         when(mockdeploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated
             ("a1",
-                dateOf(2020, 3, 3, 0, 0, 0),
-                dateOf(2020, 3, 10, 0, 0, 0)))
+                dateOf(2020, 3, 4, 0, 0, 0),
+                dateOf(2020, 3, 11, 0, 0, 0)))
             .thenReturn(deploys);
         DeploymentFrequency freq = deploymentService.calculateDeployFreq("a1", dateOf(2020, 3, 10, 0, 0, 0));
         assertThat(freq.getDeployFreqLevel(), equalTo(DORALevel.HIGH));
@@ -202,8 +201,8 @@ class DeploymentServiceImplTest
         deploys.add(d2);
         when(mockdeploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated
             ("a1",
-                dateOf(2020, 2, 9, 0, 0, 0),
-                dateOf(2020, 3, 10, 0, 0, 0)))
+                dateOf(2020, 2, 10, 0, 0, 0),
+                dateOf(2020, 3, 11, 0, 0, 0)))
             .thenReturn(deploys);
         DeploymentFrequency freq = deploymentService.calculateDeployFreq("a1", dateOf(2020, 3, 10, 0, 0, 0));
         assertThat(freq.getDeployFreqLevel(), equalTo(DORALevel.MEDIUM));
@@ -221,12 +220,92 @@ class DeploymentServiceImplTest
         deploys.add(d2);
         when(mockdeploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated
             ("a1",
-                dateOf(2019, 3, 11, 0, 0, 0),
-                dateOf(2020, 3, 10, 0, 0, 0)))
+                dateOf(2019, 3, 12, 0, 0, 0),
+                dateOf(2020, 3, 11, 0, 0, 0)))
             .thenReturn(deploys);
         DeploymentFrequency freq = deploymentService.calculateDeployFreq("a1", dateOf(2020, 3, 10, 0, 0, 0));
         assertThat(freq.getDeployFreqLevel(), equalTo(DORALevel.LOW));
         assertThat(freq.getDeploymentCount(), equalTo(2));
         assertThat(freq.getTimePeriod(), equalTo(TimePeriod.YEAR));
+        }
+
+    @Test
+    void checkEliteLeadTimeLevel()
+        {
+        Deployment d1 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        Deployment d2 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        d1.getChanges().forEach(change -> {change.setLeadTimeSeconds(100);});
+        d2.getChanges().forEach(change -> {change.setLeadTimeSeconds(100);});
+        List<Deployment> deploys = new ArrayList<>();
+        deploys.add(d1);
+        deploys.add(d2);
+        when(mockdeploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated
+            ("a1",
+                dateOf(2019, 12, 12, 0, 0, 0),
+                dateOf(2020, 3, 11, 0, 0, 0)))
+            .thenReturn(deploys);
+        LeadTime leadTime = deploymentService.calculateLeadTime("a1", dateOf(2020, 3, 10, 0, 0, 0));
+        assertThat(leadTime.getLeadTimePerfLevel(), equalTo(DORALevel.ELITE));
+        assertThat(leadTime.getLeadTimeSeconds(), equalTo(100L));
+        }
+
+    @Test
+    void checkHighLeadTimeLevel()
+        {
+        Deployment d1 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        Deployment d2 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        d1.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.DAY);});
+        d2.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.DAY);});
+        List<Deployment> deploys = new ArrayList<>();
+        deploys.add(d1);
+        deploys.add(d2);
+        when(mockdeploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated
+            ("a1",
+                dateOf(2019, 12, 12, 0, 0, 0),
+                dateOf(2020, 3, 11, 0, 0, 0)))
+            .thenReturn(deploys);
+        LeadTime leadTime = deploymentService.calculateLeadTime("a1", dateOf(2020, 3, 10, 0, 0, 0));
+        assertThat(leadTime.getLeadTimePerfLevel(), equalTo(DORALevel.HIGH));
+        assertThat(leadTime.getLeadTimeSeconds(), equalTo(DORALevel.DAY));
+        }
+
+    @Test
+    void checkMedLeadTimeLevel()
+        {
+        Deployment d1 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        Deployment d2 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        d1.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.WEEK);});
+        d2.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.WEEK);});
+        List<Deployment> deploys = new ArrayList<>();
+        deploys.add(d1);
+        deploys.add(d2);
+        when(mockdeploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated
+            ("a1",
+                dateOf(2019, 12, 12, 0, 0, 0),
+                dateOf(2020, 3, 11, 0, 0, 0)))
+            .thenReturn(deploys);
+        LeadTime leadTime = deploymentService.calculateLeadTime("a1", dateOf(2020, 3, 10, 0, 0, 0));
+        assertThat(leadTime.getLeadTimePerfLevel(), equalTo(DORALevel.MEDIUM));
+        assertThat(leadTime.getLeadTimeSeconds(), equalTo(DORALevel.WEEK));
+        }
+
+    @Test
+    void checkLowLeadTimeLevel()
+        {
+        Deployment d1 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        Deployment d2 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        d1.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.MONTH);});
+        d2.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.MONTH);});
+        List<Deployment> deploys = new ArrayList<>();
+        deploys.add(d1);
+        deploys.add(d2);
+        when(mockdeploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated
+            ("a1",
+                dateOf(2019, 12, 12, 0, 0, 0),
+                dateOf(2020, 3, 11, 0, 0, 0)))
+            .thenReturn(deploys);
+        LeadTime leadTime = deploymentService.calculateLeadTime("a1", dateOf(2020, 3, 10, 0, 0, 0));
+        assertThat(leadTime.getLeadTimePerfLevel(), equalTo(DORALevel.LOW));
+        assertThat(leadTime.getLeadTimeSeconds(), equalTo(DORALevel.MONTH));
         }
     }

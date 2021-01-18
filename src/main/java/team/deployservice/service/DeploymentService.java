@@ -2,6 +2,7 @@ package team.deployservice.service;
 
 import team.deployservice.model.Deployment;
 import team.deployservice.model.DeploymentFrequency;
+import team.deployservice.model.LeadTime;
 
 import java.util.Date;
 import java.util.List;
@@ -18,4 +19,6 @@ public interface DeploymentService
         List<Deployment> listAllForApplication(String applicationId);
         
         DeploymentFrequency calculateDeployFreq(String applicationId, Date reportingDate);
+        
+        LeadTime calculateLeadTime(String applicationId, Date reportingDate);
     }

@@ -115,23 +115,55 @@ class DeploymentControllerV1Test
     void calcDeployFreq() throws Exception
         {
         LocalDateTime date = LocalDate.now().minusDays(1).atStartOfDay();
-        Date reportingDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        Date startDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        date = LocalDate.now().atStartOfDay();
+        Date endDate = Date.from(date.toInstant(ZoneOffset.UTC));
         String appId = "a1";
         mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/frequency")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
-        verify(mockdeploymentRepo, times(1)).findByApplicationIdAndCreatedBetweenOrderByCreated(appId, reportingDate, reportingDate);
+        verify(mockdeploymentRepo, times(1)).findByApplicationIdAndCreatedBetweenOrderByCreated(appId, startDate, endDate);
         }
     
     @Test
     void calcDeployFreqByDate() throws Exception
         {
         LocalDateTime date = LocalDate.of(2020, Month.OCTOBER, 3).atStartOfDay();
-        Date reportingDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        Date startDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        date = LocalDate.of(2020, Month.OCTOBER, 4).atStartOfDay();
+        Date endDate = Date.from(date.toInstant(ZoneOffset.UTC));
         String appId = "a1";
         mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/frequency/2020-10-03")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
-        verify(mockdeploymentRepo, times(1)).findByApplicationIdAndCreatedBetweenOrderByCreated(appId, reportingDate, reportingDate);
+        verify(mockdeploymentRepo, times(1)).findByApplicationIdAndCreatedBetweenOrderByCreated(appId, startDate, endDate);
+        }
+
+    @Test
+    void calcLeadTime() throws Exception
+        {
+        LocalDateTime date = LocalDate.now().minusDays(90).atStartOfDay();
+        Date startDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        date = LocalDate.now().atStartOfDay();
+        Date endDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        String appId = "a1";
+        mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/lead_time")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+        verify(mockdeploymentRepo, times(1)).findByApplicationIdAndCreatedBetweenOrderByCreated(appId, startDate, endDate);
+        }
+
+    @Test
+    void calcLeadTimeByDate() throws Exception
+        {
+        LocalDateTime date = LocalDate.of(2020, Month.JULY, 6).atStartOfDay();
+        Date startDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        date = LocalDate.of(2020, Month.OCTOBER, 4).atStartOfDay();
+        Date endDate = Date.from(date.toInstant(ZoneOffset.UTC));
+        String appId = "a1";
+        mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/lead_time/2020-10-03")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+        verify(mockdeploymentRepo, times(1)).findByApplicationIdAndCreatedBetweenOrderByCreated(appId, startDate, endDate);
         }
     }
