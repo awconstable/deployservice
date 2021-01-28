@@ -9,10 +9,7 @@ import team.deployservice.model.DeploymentFrequency;
 import team.deployservice.model.LeadTime;
 import team.deployservice.service.DeploymentService;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -64,8 +61,9 @@ public class DeploymentControllerV1
     
         @GetMapping("/deployment/application/{id}/frequency/{date}")
         @ResponseStatus(HttpStatus.OK)
-        public DeploymentFrequency calculateDeployFreq(@PathVariable String id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
-            return deploymentService.calculateDeployFreq(id, date);
+        public DeploymentFrequency calculateDeployFreq(@PathVariable String id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+            Date reportingDate = Date.from(date.atStartOfDay(ZoneOffset.UTC).toInstant());
+            return deploymentService.calculateDeployFreq(id, reportingDate);
         }
 
         @GetMapping("/deployment/application/{id}/lead_time")
@@ -78,7 +76,8 @@ public class DeploymentControllerV1
     
         @GetMapping("/deployment/application/{id}/lead_time/{date}")
         @ResponseStatus(HttpStatus.OK)
-        public LeadTime calculateLeadTime(@PathVariable String id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
-            return deploymentService.calculateLeadTime(id, date);
+        public LeadTime calculateLeadTime(@PathVariable String id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+            Date reportingDate = Date.from(date.atStartOfDay(ZoneOffset.UTC).toInstant());
+            return deploymentService.calculateLeadTime(id, reportingDate);
         }
     }
