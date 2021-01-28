@@ -9,11 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import team.deployservice.model.Change;
-import team.deployservice.model.Deployment;
+import team.deployservice.model.*;
 import team.deployservice.service.DeploymentService;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
@@ -45,18 +45,18 @@ class DeploymentControllerV1Test
             "    \"deploymentId\": \"d1\",\n" +
             "    \"applicationId\": \"a1\",\n" +
             "    \"componentId\": \"c1\",\n" +
-            "    \"created\": \"2020-11-30T23:00:00\",\n" +
+            "    \"created\": \"2020-11-30T23:00:00.000+00:00\",\n" +
             "    \"source\": \"test\",\n" +
             "    \"changes\": [\n" +
             "      {\n" +
             "        \"id\": \"c123\",\n" +
-            "        \"created\": \"2020-11-20T22:00:00\",\n" +
+            "        \"created\": \"2020-11-20T22:00:00.000+00:00\",\n" +
             "        \"source\": \"test\",\n" +
             "        \"eventType\": \"test\"\n" +
             "      },\n" +
             "      {\n" +
             "        \"id\": \"c234\",\n" +
-            "        \"created\": \"2020-11-20T22:01:00\",\n" +
+            "        \"created\": \"2020-11-20T22:01:00.000+00:00\",\n" +
             "        \"source\": \"test\",\n" +
             "        \"eventType\": \"test\"\n" +
             "      }\n" +
@@ -70,6 +70,7 @@ class DeploymentControllerV1Test
     @Test
     void list() throws Exception
         {
+        //TODO expand this test to check the json output
         mockMvc.perform(get("/api/v1/deployment")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
@@ -98,6 +99,7 @@ class DeploymentControllerV1Test
     @Test
     void listByApp() throws Exception
         {
+        //TODO expand this test to check the json output
         String appId = "id123";
         mockMvc.perform(get("/api/v1/deployment/application/" + appId)
             .contentType(MediaType.APPLICATION_JSON))
@@ -111,9 +113,16 @@ class DeploymentControllerV1Test
         LocalDateTime date = LocalDate.now().minusDays(1).atStartOfDay();
         Date startDate = Date.from(date.toInstant(ZoneOffset.UTC));
         String appId = "a1";
-        mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/frequency")
+        DeploymentFrequency fr = new DeploymentFrequency(appId, startDate, 10, TimePeriod.MONTH, DORALevel.MEDIUM);
+        when(mockDeploymentService.calculateDeployFreq(appId, startDate)).thenReturn(fr);
+        
+        MvcResult result = mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/frequency")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk()).andReturn();
+        
+        String content = result.getResponse().getContentAsString();
+        String dateOut = DateTimeFormatter.ISO_LOCAL_DATE.format(date);
+        assertThat(content, is(equalTo("{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"deploymentCount\":10,\"timePeriod\":\"MONTH\",\"deployFreqLevel\":\"MEDIUM\"}")));
         verify(mockDeploymentService, times(1)).calculateDeployFreq(appId, startDate);
         }
     
@@ -123,9 +132,17 @@ class DeploymentControllerV1Test
         LocalDateTime date = LocalDate.of(2020, Month.OCTOBER, 3).atStartOfDay();
         Date startDate = Date.from(date.toInstant(ZoneOffset.UTC));
         String appId = "a1";
-        mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/frequency/2020-10-03")
+        DeploymentFrequency fr = new DeploymentFrequency(appId, startDate, 10, TimePeriod.MONTH, DORALevel.MEDIUM);
+        when(mockDeploymentService.calculateDeployFreq(appId, startDate)).thenReturn(fr);
+        String dateOut = DateTimeFormatter.ISO_LOCAL_DATE.format(date);
+        assertThat(dateOut, is(equalTo("2020-10-03")));
+
+        MvcResult result = mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/frequency/" + dateOut)
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk()).andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        assertThat(content, is(equalTo("{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"deploymentCount\":10,\"timePeriod\":\"MONTH\",\"deployFreqLevel\":\"MEDIUM\"}")));
         verify(mockDeploymentService, times(1)).calculateDeployFreq(appId, startDate);
         }
 
@@ -135,9 +152,16 @@ class DeploymentControllerV1Test
         LocalDateTime date = LocalDate.now().minusDays(1).atStartOfDay();
         Date endDate = Date.from(date.toInstant(ZoneOffset.UTC));
         String appId = "a1";
-        mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/lead_time")
+        LeadTime lt = new LeadTime(appId, endDate, 120, DORALevel.ELITE);
+        when(mockDeploymentService.calculateLeadTime(appId, endDate)).thenReturn(lt);
+
+        MvcResult result = mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/lead_time")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk()).andReturn();
+
+        String dateOut = DateTimeFormatter.ISO_LOCAL_DATE.format(date);
+        String content = result.getResponse().getContentAsString();
+        assertThat(content, is(equalTo("{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"leadTimeSeconds\":120,\"leadTimePerfLevel\":\"ELITE\"}")));
         verify(mockDeploymentService, times(1)).calculateLeadTime(appId, endDate);
         }
 
@@ -147,9 +171,18 @@ class DeploymentControllerV1Test
         LocalDateTime date = LocalDate.of(2020, Month.JULY, 6).atStartOfDay();
         Date startDate = Date.from(date.toInstant(ZoneOffset.UTC));
         String appId = "a1";
-        mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/lead_time/2020-07-06")
+        LeadTime lt = new LeadTime(appId, startDate, 120, DORALevel.ELITE);
+        when(mockDeploymentService.calculateLeadTime(appId, startDate)).thenReturn(lt);
+        String dateOut = DateTimeFormatter.ISO_LOCAL_DATE.format(date);
+        assertThat(dateOut, is(equalTo("2020-07-06")));
+
+        MvcResult result = mockMvc.perform(get("/api/v1/deployment/application/" + appId + "/lead_time/" + dateOut)
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk()).andReturn();
+
+        
+        String content = result.getResponse().getContentAsString();
+        assertThat(content, is(equalTo("{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"leadTimeSeconds\":120,\"leadTimePerfLevel\":\"ELITE\"}")));
         verify(mockDeploymentService, times(1)).calculateLeadTime(appId, startDate);
         }
     }

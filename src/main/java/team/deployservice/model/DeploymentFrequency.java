@@ -1,10 +1,13 @@
 package team.deployservice.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class DeploymentFrequency
     {
     private final String applicationId;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private final Date reportingDate;
     private final Integer deploymentCount;
     private final TimePeriod timePeriod;
