@@ -44,7 +44,6 @@ class DeploymentControllerV1Test
             "{\n" +
             "    \"deploymentId\": \"d1\",\n" +
             "    \"applicationId\": \"a1\",\n" +
-            "    \"componentId\": \"c1\",\n" +
             "    \"created\": \"2020-11-30T23:00:00.000+00:00\",\n" +
             "    \"source\": \"test\",\n" +
             "    \"changes\": [\n" +
@@ -86,13 +85,13 @@ class DeploymentControllerV1Test
         Change c1 = new Change("c1", Date.from(reportingDate.toInstant()), "test", "test");
         HashSet<Change> set = new HashSet<>();
         set.add(c1);
-        Deployment d1 = new Deployment("d1", "d1", "a1", "c1", Date.from(reportingDate.toInstant()), "test", set);
+        Deployment d1 = new Deployment("d1", "d1", "a1", Date.from(reportingDate.toInstant()), "test", set);
         when(mockDeploymentService.get(id)).thenReturn(Optional.of(d1));
         MvcResult result = mockMvc.perform(get("/api/v1/deployment/" + id)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk()).andReturn();
         String content = result.getResponse().getContentAsString();
-        assertThat(content, is(equalTo("{\"id\":null,\"deploymentId\":\"d1\",\"deploymentDesc\":\"d1\",\"applicationId\":\"a1\",\"componentId\":\"c1\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"test\",\"changes\":[{\"id\":\"c1\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"test\",\"eventType\":\"test\",\"leadTimeSeconds\":0}],\"leadTimeSeconds\":0,\"leadTimePerfLevel\":null}")));
+        assertThat(content, is(equalTo("{\"id\":null,\"deploymentId\":\"d1\",\"deploymentDesc\":\"d1\",\"applicationId\":\"a1\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"test\",\"changes\":[{\"id\":\"c1\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"test\",\"eventType\":\"test\",\"leadTimeSeconds\":0}],\"leadTimeSeconds\":0,\"leadTimePerfLevel\":null}")));
         verify(mockDeploymentService, times(1)).get(id);
         }
 

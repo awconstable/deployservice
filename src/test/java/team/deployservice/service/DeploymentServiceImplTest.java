@@ -74,7 +74,6 @@ class DeploymentServiceImplTest
             "d1",
             "deployment d1",
             "a1",
-            "c1",
             dateOf(2020, dM, dD, 10, 0, 0),
             "source", changes);
         return d1;
