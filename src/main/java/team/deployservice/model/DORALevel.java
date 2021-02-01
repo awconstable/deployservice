@@ -2,6 +2,7 @@ package team.deployservice.model;
 
 public enum DORALevel
     {
+        UNKNOWN,
         LOW,
         MEDIUM,
         HIGH,

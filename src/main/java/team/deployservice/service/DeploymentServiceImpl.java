@@ -111,7 +111,11 @@ public class DeploymentServiceImpl implements DeploymentService
         //check for low performance
         List<Deployment> lowDeploys = deploymentRepo
             .findByApplicationIdAndCreatedBetweenOrderByCreated(applicationId, getStartDate(reportingDate, 364), endDate);
-        return new DeploymentFrequency(applicationId, reportingDate, lowDeploys.size(), TimePeriod.YEAR, DORALevel.LOW);
+        if(lowDeploys.size() >= 1) {
+            return new DeploymentFrequency(applicationId, reportingDate, lowDeploys.size(), TimePeriod.YEAR, DORALevel.LOW);
+        }
+        //No data, return unknown performance level    
+        return new DeploymentFrequency(applicationId, reportingDate, 0, TimePeriod.YEAR, DORALevel.UNKNOWN);
         }
 
     @Override
@@ -121,6 +125,10 @@ public class DeploymentServiceImpl implements DeploymentService
         Date endDate = getEndDate(reportingDate);
         List<Deployment> deploys = deploymentRepo
             .findByApplicationIdAndCreatedBetweenOrderByCreated(applicationId, startDate, endDate);
+        //No data, return unknown performance level
+        if(deploys.size() == 0){
+            return new LeadTime(applicationId, reportingDate, 0, DORALevel.UNKNOWN);
+        }
         ArrayList<Long> cLeadTimes = new ArrayList<>();
         deploys.forEach(
             deployment -> deployment.getChanges().forEach(

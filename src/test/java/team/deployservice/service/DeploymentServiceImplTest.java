@@ -230,6 +230,15 @@ class DeploymentServiceImplTest
         }
 
     @Test
+    void checkUnknownDeployFreqLevel()
+        {
+        DeploymentFrequency freq = deploymentService.calculateDeployFreq("a1", dateOf(2020, 3, 10, 0, 0, 0));
+        assertThat(freq.getDeployFreqLevel(), equalTo(DORALevel.UNKNOWN));
+        assertThat(freq.getDeploymentCount(), equalTo(0));
+        assertThat(freq.getTimePeriod(), equalTo(TimePeriod.YEAR));
+        }
+
+    @Test
     void checkEliteLeadTimeLevel()
         {
         Deployment d1 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
@@ -307,5 +316,13 @@ class DeploymentServiceImplTest
         LeadTime leadTime = deploymentService.calculateLeadTime("a1", dateOf(2020, 3, 10, 0, 0, 0));
         assertThat(leadTime.getLeadTimePerfLevel(), equalTo(DORALevel.LOW));
         assertThat(leadTime.getLeadTimeSeconds(), equalTo(DORALevel.MONTH));
+        }
+
+    @Test
+    void checkUnknownLeadTimeLevel()
+        {
+        LeadTime leadTime = deploymentService.calculateLeadTime("a1", dateOf(2020, 3, 10, 0, 0, 0));
+        assertThat(leadTime.getLeadTimePerfLevel(), equalTo(DORALevel.UNKNOWN));
+        assertThat(leadTime.getLeadTimeSeconds(), equalTo(0L));
         }
     }
