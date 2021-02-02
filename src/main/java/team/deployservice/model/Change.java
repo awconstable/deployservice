@@ -2,13 +2,17 @@ package team.deployservice.model;
 
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Objects;
 
 public class Change
     {
     @Id
+    @NotBlank(message = "Change: unique id is mandatory")
     private final String id;
+    @NotNull(message = "Change: created date is mandatory")
     private final Date created;
     private final String source;
     private final String eventType;

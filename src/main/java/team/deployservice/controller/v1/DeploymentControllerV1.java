@@ -9,6 +9,7 @@ import team.deployservice.model.DeploymentFrequency;
 import team.deployservice.model.LeadTime;
 import team.deployservice.service.DeploymentService;
 
+import javax.validation.Valid;
 import java.time.*;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +30,7 @@ public class DeploymentControllerV1
 
         @PostMapping("/deployment")
         @ResponseStatus(HttpStatus.CREATED)
-        public Deployment store(@RequestBody Deployment deployment){
+        public Deployment store(@Valid @RequestBody Deployment deployment){
             return deploymentService.store(deployment);
         }
 

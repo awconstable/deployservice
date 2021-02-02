@@ -67,6 +67,167 @@ class DeploymentControllerV1Test
         }
 
     @Test
+    void storeCheckValidationAppId() throws Exception
+        {
+        mockMvc.perform(post("/api/v1/deployment").contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{\n" +
+                    "    \"deploymentId\": \"d1\",\n" +
+                    "    \"created\": \"2020-11-30T23:00:00.000+00:00\",\n" +
+                    "    \"source\": \"test\",\n" +
+                    "    \"changes\": [\n" +
+                    "      {\n" +
+                    "        \"id\": \"c123\",\n" +
+                    "        \"created\": \"2020-11-20T22:00:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"id\": \"c234\",\n" +
+                    "        \"created\": \"2020-11-20T22:01:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      }\n" +
+                    "    ]\n" +
+                    "}"
+            ))
+            .andExpect(status().is4xxClientError());
+        verify(mockDeploymentService, never()).store(any(Deployment.class));
+        }
+
+    @Test
+    void storeCheckValidationDeployId() throws Exception
+        {
+        mockMvc.perform(post("/api/v1/deployment").contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{\n" +
+                    "    \"applicationId\": \"a1\",\n" +
+                    "    \"created\": \"2020-11-30T23:00:00.000+00:00\",\n" +
+                    "    \"source\": \"test\",\n" +
+                    "    \"changes\": [\n" +
+                    "      {\n" +
+                    "        \"id\": \"c123\",\n" +
+                    "        \"created\": \"2020-11-20T22:00:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"id\": \"c234\",\n" +
+                    "        \"created\": \"2020-11-20T22:01:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      }\n" +
+                    "    ]\n" +
+                    "}"
+            ))
+            .andExpect(status().is4xxClientError());
+        verify(mockDeploymentService, never()).store(any(Deployment.class));
+        }
+
+    @Test
+    void storeCheckValidationCreated() throws Exception
+        {
+        mockMvc.perform(post("/api/v1/deployment").contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{\n" +
+                    "    \"applicationId\": \"a1\",\n" +
+                    "    \"deploymentId\": \"d1\",\n" +
+                    "    \"source\": \"test\",\n" +
+                    "    \"changes\": [\n" +
+                    "      {\n" +
+                    "        \"id\": \"c123\",\n" +
+                    "        \"created\": \"2020-11-20T22:00:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"id\": \"c234\",\n" +
+                    "        \"created\": \"2020-11-20T22:01:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      }\n" +
+                    "    ]\n" +
+                    "}"
+            ))
+            .andExpect(status().is4xxClientError());
+        verify(mockDeploymentService, never()).store(any(Deployment.class));
+        }
+
+    @Test
+    void storeCheckValidationChanges() throws Exception
+        {
+        mockMvc.perform(post("/api/v1/deployment").contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{\n" +
+                    "    \"applicationId\": \"a1\",\n" +
+                    "    \"deploymentId\": \"d1\",\n" +
+                    "    \"created\": \"2020-11-30T23:00:00.000+00:00\",\n" +
+                    "    \"source\": \"test\",\n" +
+                    "}"
+            ))
+            .andExpect(status().is4xxClientError());
+        verify(mockDeploymentService, never()).store(any(Deployment.class));
+        }
+
+    @Test
+    void storeCheckChangeId() throws Exception
+        {
+        mockMvc.perform(post("/api/v1/deployment").contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{\n" +
+                    "    \"applicationId\": \"a1\",\n" +
+                    "    \"deploymentId\": \"d1\",\n" +
+                    "    \"created\": \"2020-11-30T23:00:00.000+00:00\",\n" +
+                    "    \"source\": \"test\",\n" +
+                    "    \"changes\": [\n" +
+                    "      {\n" +
+                    "        \"created\": \"2020-11-20T22:00:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"id\": \"c234\",\n" +
+                    "        \"created\": \"2020-11-20T22:01:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      }\n" +
+                    "    ]\n" +
+                    "}"
+            ))
+            .andExpect(status().is4xxClientError());
+        verify(mockDeploymentService, never()).store(any(Deployment.class));
+        }
+
+    @Test
+    void storeCheckChangeCreated() throws Exception
+        {
+        mockMvc.perform(post("/api/v1/deployment").contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{\n" +
+                    "    \"applicationId\": \"a1\",\n" +
+                    "    \"deploymentId\": \"d1\",\n" +
+                    "    \"created\": \"2020-11-30T23:00:00.000+00:00\",\n" +
+                    "    \"source\": \"test\",\n" +
+                    "    \"changes\": [\n" +
+                    "      {\n" +
+                    "        \"id\": \"c123\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"id\": \"c234\",\n" +
+                    "        \"created\": \"2020-11-20T22:01:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      }\n" +
+                    "    ]\n" +
+                    "}"
+            ))
+            .andExpect(status().is4xxClientError());
+        verify(mockDeploymentService, never()).store(any(Deployment.class));
+        }
+    
+    @Test
     void list() throws Exception
         {
         //TODO expand this test to check the json output

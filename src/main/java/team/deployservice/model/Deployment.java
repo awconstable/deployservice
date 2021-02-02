@@ -2,6 +2,9 @@ package team.deployservice.model;
 
 import org.springframework.data.annotation.Id;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -10,11 +13,16 @@ public class Deployment
     {
     @Id
     private String id;
+    @NotBlank(message = "Deployment: deploymentId is mandatory")
     private final String deploymentId;
     private final String deploymentDesc;
+    @NotBlank(message = "Deployment: applicationId is mandatory")
     private final String applicationId;
+    @NotNull(message = "Deployment: created date is mandatory")
     private final Date created;
     private final String source;
+    @Valid
+    @NotNull(message = "Deployment: changes are mandatory")
     private final HashSet<Change> changes;
     private long leadTimeSeconds;
     private DORALevel leadTimePerfLevel;
