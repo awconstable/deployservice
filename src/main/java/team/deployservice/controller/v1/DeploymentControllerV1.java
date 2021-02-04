@@ -52,6 +52,13 @@ public class DeploymentControllerV1
             return deploymentService.listAllForApplication(id);
         }
 
+        @GetMapping("/deployment/application/{id}/date/{date}")
+        @ResponseStatus(HttpStatus.OK)
+        public List<Deployment> listForAppAndDate(@PathVariable String id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+            Date reportingDate = Date.from(date.atStartOfDay(ZoneOffset.UTC).toInstant());
+            return deploymentService.listAllForApplication(id, reportingDate);
+        }
+
         @GetMapping("/deployment/application/{id}/frequency")
         @ResponseStatus(HttpStatus.OK)
         public DeploymentFrequency calculateDeployFreq(@PathVariable String id){

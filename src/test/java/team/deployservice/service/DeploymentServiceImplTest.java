@@ -326,4 +326,46 @@ class DeploymentServiceImplTest
         assertThat(leadTime.getLeadTimePerfLevel(), equalTo(DORALevel.UNKNOWN));
         assertThat(leadTime.getLeadTimeSeconds(), equalTo(0L));
         }
+
+    @Test
+    void checkListAll()
+        {
+        Deployment d1 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        Deployment d2 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        d1.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.MONTH);});
+        d2.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.MONTH);});
+        List<Deployment> deploys = new ArrayList<>();
+        deploys.add(d1);
+        deploys.add(d2);
+        String appId = "app1";
+        when(mockdeploymentRepo.findByApplicationId
+            (appId))
+            .thenReturn(deploys);
+        
+        List<Deployment> deployList = deploymentService.listAllForApplication(appId);
+        
+        assertThat(deployList.size(), equalTo(2));
+        }
+
+    @Test
+    void checkListAllWithDate()
+        {
+        Deployment d1 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        Deployment d2 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        d1.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.MONTH);});
+        d2.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.MONTH);});
+        List<Deployment> deploys = new ArrayList<>();
+        deploys.add(d1);
+        deploys.add(d2);
+        String appId = "app1";
+        when(mockdeploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated
+            (appId,
+                dateOf(2020, 3, 10, 0, 0, 0),
+                dateOf(2020, 3, 11, 0, 0, 0)))
+            .thenReturn(deploys);
+
+        List<Deployment> deployList = deploymentService.listAllForApplication(appId, dateOf(2020, 3, 10, 0, 0, 0));
+
+        assertThat(deployList.size(), equalTo(2));
+        }
     }

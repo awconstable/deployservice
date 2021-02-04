@@ -77,6 +77,12 @@ public class DeploymentServiceImpl implements DeploymentService
         return deploymentRepo.findByApplicationId(applicationId);
         }
 
+    @Override
+    public List<Deployment> listAllForApplication(String applicationId, Date reportingDate)
+        {
+        return deploymentRepo.findByApplicationIdAndCreatedBetweenOrderByCreated(applicationId, getStartDate(reportingDate, 0), getEndDate(reportingDate));
+        }
+
     private Date getStartDate(Date reportingDate, Integer minusDays){
         ZonedDateTime startDate = ZonedDateTime.ofInstant(reportingDate.toInstant(), ZoneOffset.UTC).minusDays(minusDays);
         return Date.from(startDate.toInstant());

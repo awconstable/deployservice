@@ -17,6 +17,8 @@ public interface DeploymentService
         List<Deployment> list();
         
         List<Deployment> listAllForApplication(String applicationId);
+
+        List<Deployment> listAllForApplication(String applicationId, Date reportingDate);
         
         DeploymentFrequency calculateDeployFreq(String applicationId, Date reportingDate);
         
