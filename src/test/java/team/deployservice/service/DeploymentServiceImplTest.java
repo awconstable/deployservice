@@ -48,6 +48,7 @@ class DeploymentServiceImplTest
     
     private Deployment setupDeployment(int c1M, int c1D, int c1H, int c2M, int c2D, int c2H, int c3M, int c3D, int c3H, int dM, int dD)
         {
+        String rfcId = "rfc123";
         HashSet<Change> changes = new HashSet<>();
         c1 = new Change(
             "c1",
@@ -74,6 +75,7 @@ class DeploymentServiceImplTest
             "d1",
             "deployment d1",
             "a1",
+            rfcId,
             dateOf(2020, dM, dD, 10, 0, 0),
             "source", changes);
         return d1;

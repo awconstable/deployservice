@@ -23,20 +23,20 @@ docker run --name deployservice -d -p 8080:8080 --network <mongo network> -e spr
   {
     "deploymentId": "d1",  
     "deploymentDesc": "deployment d1",
-    "applicationId": "a1",
-    "componentId": "c1",
-    "created": "2020-11-30 23:00:00",
+    "applicationId": "a1",  
+    "rfcId": "rfc1",
+    "created": "2020-11-30T13:00:00.000+00:00",
     "source": "test",
     "changes": [
       {
         "id": "c123",
-        "created": "2020-11-20 22:00:00",
+        "created": "2020-11-20T12:00:00.000+00:00",
         "source": "test",
         "eventType": "test"
       },
       {
         "id": "c234",
-        "created": "2020-11-20 22:01:00",
+        "created": "2020-11-20T12:00:00.000+00:00",
         "source": "test",
         "eventType": "test"
       }

@@ -19,8 +19,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,6 +45,7 @@ class DeploymentControllerV1Test
             "    \"applicationId\": \"a1\",\n" +
             "    \"created\": \"2020-11-30T23:00:00.000+00:00\",\n" +
             "    \"source\": \"test\",\n" +
+            "    \"rfcId\": \"rfc123\",\n" +
             "    \"changes\": [\n" +
             "      {\n" +
             "        \"id\": \"c123\",\n" +
@@ -92,6 +92,37 @@ class DeploymentControllerV1Test
                     "}"
             ))
             .andExpect(status().is4xxClientError());
+        verify(mockDeploymentService, never()).store(any(Deployment.class));
+        }
+
+    @Test
+    void storeCheckValidationRfcId() throws Exception
+        {
+        MvcResult result = mockMvc.perform(post("/api/v1/deployment").contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{\n" +
+                    "    \"deploymentId\": \"d1\",\n" +
+                    "    \"applicationId\": \"a1\",\n" +
+                    "    \"created\": \"2020-11-30T23:00:00.000+00:00\",\n" +
+                    "    \"source\": \"test\",\n" +
+                    "    \"changes\": [\n" +
+                    "      {\n" +
+                    "        \"id\": \"c123\",\n" +
+                    "        \"created\": \"2020-11-20T22:00:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"id\": \"c234\",\n" +
+                    "        \"created\": \"2020-11-20T22:01:00.000+00:00\",\n" +
+                    "        \"source\": \"test\",\n" +
+                    "        \"eventType\": \"test\"\n" +
+                    "      }\n" +
+                    "    ]\n" +
+                    "}"
+            ))
+            .andExpect(status().is4xxClientError()).andReturn();
+        assertThat(result.getResolvedException().toString(), containsString("Deployment: rfcId is mandatory"));
         verify(mockDeploymentService, never()).store(any(Deployment.class));
         }
 
@@ -243,16 +274,17 @@ class DeploymentControllerV1Test
         ZonedDateTime reportingDate = LocalDate.of(2020, 10, 10).atStartOfDay(ZoneId.of("UTC"));
         
         String id = "testId";
+        String rfcId = "rfc123";
         Change c1 = new Change("c1", Date.from(reportingDate.toInstant()), "test", "test");
         HashSet<Change> set = new HashSet<>();
         set.add(c1);
-        Deployment d1 = new Deployment("d1", "d1", "a1", Date.from(reportingDate.toInstant()), "test", set);
+        Deployment d1 = new Deployment("d1", "d1", "a1", rfcId, Date.from(reportingDate.toInstant()), "test", set);
         when(mockDeploymentService.get(id)).thenReturn(Optional.of(d1));
         MvcResult result = mockMvc.perform(get("/api/v1/deployment/" + id)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk()).andReturn();
         String content = result.getResponse().getContentAsString();
-        assertThat(content, is(equalTo("{\"id\":null,\"deploymentId\":\"d1\",\"deploymentDesc\":\"d1\",\"applicationId\":\"a1\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"test\",\"changes\":[{\"id\":\"c1\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"test\",\"eventType\":\"test\",\"leadTimeSeconds\":0}],\"leadTimeSeconds\":0,\"leadTimePerfLevel\":null}")));
+        assertThat(content, is(equalTo("{\"id\":null,\"deploymentId\":\"d1\",\"deploymentDesc\":\"d1\",\"applicationId\":\"a1\",\"rfcId\":\"rfc123\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"test\",\"changes\":[{\"id\":\"c1\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"test\",\"eventType\":\"test\",\"leadTimeSeconds\":0}],\"leadTimeSeconds\":0,\"leadTimePerfLevel\":null}")));
         verify(mockDeploymentService, times(1)).get(id);
         }
 

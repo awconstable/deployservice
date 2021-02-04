@@ -27,13 +27,14 @@ class DeploymentRepoTest extends MongoDBContainerTest
     @BeforeEach
     void setUp()
         {
+        String rfcId = "rfc123";
         Change c1 = new Change("c1", Date.from(Instant.now()), "test", "test");
         Change c2 = new Change("c2", Date.from(Instant.now()), "test", "test");
-        Deployment d1 = new Deployment("d1", "deployment v1", "a1", Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
+        Deployment d1 = new Deployment("d1", "deployment v1", "a1", rfcId, Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
         repo.save(d1);
-        Deployment d2 = new Deployment("d2", "deployment v2", "a1", Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
+        Deployment d2 = new Deployment("d2", "deployment v2", "a1", rfcId, Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
         repo.save(d2);
-        Deployment d3 = new Deployment("d3", "deployment v3", "a2", Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
+        Deployment d3 = new Deployment("d3", "deployment v3", "a2", rfcId, Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
         repo.save(d3);
         }
 

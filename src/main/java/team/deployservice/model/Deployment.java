@@ -18,20 +18,24 @@ public class Deployment
     private final String deploymentDesc;
     @NotBlank(message = "Deployment: applicationId is mandatory")
     private final String applicationId;
+    @NotNull(message = "Deployment: rfcId is mandatory")
+    private final String rfcId;
     @NotNull(message = "Deployment: created date is mandatory")
     private final Date created;
     private final String source;
     @Valid
     @NotNull(message = "Deployment: changes are mandatory")
     private final HashSet<Change> changes;
+
     private long leadTimeSeconds;
     private DORALevel leadTimePerfLevel;
 
-    public Deployment(String deploymentId, String deploymentDesc, String applicationId, Date created, String source, HashSet<Change> changes)
+    public Deployment(String deploymentId, String deploymentDesc, String applicationId, String rfcId, Date created, String source, HashSet<Change> changes)
         {
         this.deploymentId = deploymentId;
         this.deploymentDesc = deploymentDesc;
         this.applicationId = applicationId;
+        this.rfcId = rfcId;
         this.created = created;
         this.source = source;
         this.changes = changes;
@@ -54,6 +58,8 @@ public class Deployment
         return applicationId;
         }
 
+    public String getRfcId() { return rfcId; }
+    
     public Date getCreated()
         {
         return created;
@@ -115,6 +121,7 @@ public class Deployment
             ", deploymentId='" + deploymentId + '\'' +
             ", deploymentDesc='" + deploymentDesc + '\'' +
             ", applicationId='" + applicationId + '\'' +
+            ", rfcId='" + rfcId + '\'' +
             ", created=" + created +
             ", source='" + source + '\'' +
             ", changes=" + changes +
