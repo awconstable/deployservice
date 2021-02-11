@@ -1,6 +1,11 @@
 # deployservice
 A deployments repository to measure team performance
 
+[![CircleCI](https://circleci.com/gh/awconstable/deployservice.svg?style=shield)](https://circleci.com/gh/awconstable/deployservice)
+[![codecov](https://codecov.io/gh/awconstable/deployservice/branch/master/graph/badge.svg)](https://codecov.io/gh/awconstable/deployservice)
+[![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/awconstable/deployservice.svg)](https://libraries.io/github/awconstable/deployservice)
+[![dockerhub](https://img.shields.io/docker/pulls/awconstable/deployservice.svg)](https://cloud.docker.com/repository/docker/awconstable/deployservice)
+
 ### Run app as a Docker container
 
 *See https://github.com/docker-library/openjdk/issues/135 as to why spring.boot.mongodb.. env vars don't work*
