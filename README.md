@@ -2,6 +2,7 @@
 A deployments repository to measure team performance
 
 [![CircleCI](https://circleci.com/gh/awconstable/deployservice.svg?style=shield)](https://circleci.com/gh/awconstable/deployservice)
+![CodeQL](https://github.com/awconstable/deployservice/workflows/CodeQL/badge.svg)
 [![codecov](https://codecov.io/gh/awconstable/deployservice/branch/master/graph/badge.svg)](https://codecov.io/gh/awconstable/deployservice)
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/awconstable/deployservice.svg)](https://libraries.io/github/awconstable/deployservice)
 [![dockerhub](https://img.shields.io/docker/pulls/awconstable/deployservice.svg)](https://cloud.docker.com/repository/docker/awconstable/deployservice)
