@@ -72,6 +72,14 @@ public class DeploymentServiceImpl implements DeploymentService
         }
 
     @Override
+    public String delete(String id)
+        {
+        Optional<Deployment> deployment = get(id);
+        deployment.ifPresent(deploymentRepo::delete);
+        return id;
+        }
+
+    @Override
     public List<Deployment> listAllForApplication(String applicationId)
         {
         return deploymentRepo.findByApplicationId(applicationId);

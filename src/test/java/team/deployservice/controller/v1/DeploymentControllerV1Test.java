@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import team.deployservice.model.*;
 import team.deployservice.service.DeploymentService;
 
@@ -264,6 +265,18 @@ class DeploymentControllerV1Test
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
         verify(mockDeploymentService, times(1)).list();
+        }
+
+    @Test
+    void delete() throws Exception
+        {
+        when(mockDeploymentService.delete("id123")).thenReturn("id123");
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/deployment/{id}", "id123")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk()).andReturn();
+        String content = result.getResponse().getContentAsString();
+        assertThat(content, is(equalTo("id123")));
+        verify(mockDeploymentService, times(1)).delete("id123");
         }
 
     @Test

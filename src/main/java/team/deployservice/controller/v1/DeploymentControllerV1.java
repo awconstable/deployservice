@@ -45,6 +45,10 @@ public class DeploymentControllerV1
         public Optional<Deployment> show(@PathVariable String id){
             return deploymentService.get(id);
         }
+    
+        @DeleteMapping("/deployment/{id}")
+        @ResponseStatus(HttpStatus.OK)
+        public String delete(@PathVariable String id) { return deploymentService.delete(id); }
 
         @GetMapping("/deployment/application/{id}")
         @ResponseStatus(HttpStatus.OK)

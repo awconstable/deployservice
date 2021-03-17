@@ -16,6 +16,8 @@ public interface DeploymentService
 
         List<Deployment> list();
         
+        String delete(String id);
+        
         List<Deployment> listAllForApplication(String applicationId);
 
         List<Deployment> listAllForApplication(String applicationId, Date reportingDate);

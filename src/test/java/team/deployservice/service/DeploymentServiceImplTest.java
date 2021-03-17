@@ -12,15 +12,11 @@ import team.deployservice.repo.DeploymentRepo;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class DeploymentServiceImplTest
@@ -367,5 +363,17 @@ class DeploymentServiceImplTest
         List<Deployment> deployList = deploymentService.listAllForApplication(appId, dateOf(2020, 3, 10, 0, 0, 0));
 
         assertThat(deployList.size(), equalTo(2));
+        }
+    
+    @Test
+    void checkDelete()
+        {
+        Deployment d1 =  setupDeployment(1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        when(mockdeploymentRepo.findById("id123"))
+            .thenReturn(Optional.of(d1));
+        String id = deploymentService.delete("id123");
+        assertThat(id, is(equalTo("id123")));
+        verify(mockdeploymentRepo, times(1)).findById("id123");
+        verify(mockdeploymentRepo, times(1)).delete(d1);
         }
     }
