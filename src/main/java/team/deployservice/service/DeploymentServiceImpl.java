@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.deployservice.model.*;
 import team.deployservice.repo.DeploymentRepo;
+import team.deployservice.hierarchy.repo.HierarchyClient;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -14,11 +15,13 @@ public class DeploymentServiceImpl implements DeploymentService
     {
 
     private final DeploymentRepo deploymentRepo;
+    private final HierarchyClient hierarchyClient;
 
     @Autowired
-    public DeploymentServiceImpl(DeploymentRepo deploymentRepo)
+    public DeploymentServiceImpl(DeploymentRepo deploymentRepo, HierarchyClient hierarchyClient)
         {
         this.deploymentRepo = deploymentRepo;
+        this.hierarchyClient = hierarchyClient;
         }
 
     private static long findAverageUsingStream(Long[] array) {
@@ -103,28 +106,29 @@ public class DeploymentServiceImpl implements DeploymentService
     @Override
     public DeploymentFrequency calculateDeployFreq(String applicationId, Date reportingDate)
         {
+        Collection<String> appIds = hierarchyClient.findApplicationChildIds(applicationId);
         Date endDate = getEndDate(reportingDate);
         //check for elite performance
         List<Deployment> eliteDeploys = deploymentRepo
-            .findByApplicationIdAndCreatedBetweenOrderByCreated(applicationId, getStartDate(reportingDate, 0), endDate);
+            .findByApplicationIdInAndCreatedBetweenOrderByCreated(appIds, getStartDate(reportingDate, 0), endDate);
         if(eliteDeploys.size() > 1){
             return new DeploymentFrequency(applicationId, reportingDate, eliteDeploys.size(), TimePeriod.DAY, DORALevel.ELITE);
         }
         //check for high performance
         List<Deployment> highDeploys = deploymentRepo
-            .findByApplicationIdAndCreatedBetweenOrderByCreated(applicationId, getStartDate(reportingDate, 6), endDate);
+            .findByApplicationIdInAndCreatedBetweenOrderByCreated(appIds, getStartDate(reportingDate, 6), endDate);
         if(highDeploys.size() >= 1){
             return new DeploymentFrequency(applicationId, reportingDate, highDeploys.size(), TimePeriod.WEEK, DORALevel.HIGH);
         }
         //check for medium performance
         List<Deployment> medDeploys = deploymentRepo
-            .findByApplicationIdAndCreatedBetweenOrderByCreated(applicationId, getStartDate(reportingDate, 29), endDate);
+            .findByApplicationIdInAndCreatedBetweenOrderByCreated(appIds, getStartDate(reportingDate, 29), endDate);
         if(medDeploys.size() >= 1){
             return new DeploymentFrequency(applicationId, reportingDate, medDeploys.size(), TimePeriod.MONTH, DORALevel.MEDIUM);
         }
         //check for low performance
         List<Deployment> lowDeploys = deploymentRepo
-            .findByApplicationIdAndCreatedBetweenOrderByCreated(applicationId, getStartDate(reportingDate, 364), endDate);
+            .findByApplicationIdInAndCreatedBetweenOrderByCreated(appIds, getStartDate(reportingDate, 364), endDate);
         if(lowDeploys.size() >= 1) {
             return new DeploymentFrequency(applicationId, reportingDate, lowDeploys.size(), TimePeriod.YEAR, DORALevel.LOW);
         }
@@ -135,10 +139,11 @@ public class DeploymentServiceImpl implements DeploymentService
     @Override
     public LeadTime calculateLeadTime(String applicationId, Date reportingDate)
         {
+        Collection<String> appIds = hierarchyClient.findApplicationChildIds(applicationId);
         Date startDate = getStartDate(reportingDate, 89);
         Date endDate = getEndDate(reportingDate);
         List<Deployment> deploys = deploymentRepo
-            .findByApplicationIdAndCreatedBetweenOrderByCreated(applicationId, startDate, endDate);
+            .findByApplicationIdInAndCreatedBetweenOrderByCreated(appIds, startDate, endDate);
         //No data, return unknown performance level
         if(deploys.size() == 0){
             return new LeadTime(applicationId, reportingDate, 0, DORALevel.UNKNOWN);

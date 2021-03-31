@@ -58,15 +58,26 @@ class DeploymentRepoTest extends MongoDBContainerTest
         List<Deployment> deploys = repo.findByApplicationId("a1");
         assertThat(deploys.size(), is(equalTo(2)));
         }
-    
+
     @Test
     public void getAllForDateRange()
         {
-            LocalDateTime startDateTime = LocalDate.now().atStartOfDay();
-            LocalDateTime endDateTime = LocalDate.now().plusDays(1).atStartOfDay();
-            Date startDate = Date.from(startDateTime.toInstant(ZoneOffset.UTC));
-            Date endDate = Date.from(endDateTime.toInstant(ZoneOffset.UTC));
-            List<Deployment> deploys = repo.findByApplicationIdAndCreatedBetweenOrderByCreated("a1", startDate, endDate);
-            assertThat(deploys.size(), is(equalTo(2)));
+        LocalDateTime startDateTime = LocalDate.now().atStartOfDay();
+        LocalDateTime endDateTime = LocalDate.now().plusDays(1).atStartOfDay();
+        Date startDate = Date.from(startDateTime.toInstant(ZoneOffset.UTC));
+        Date endDate = Date.from(endDateTime.toInstant(ZoneOffset.UTC));
+        List<Deployment> deploys = repo.findByApplicationIdAndCreatedBetweenOrderByCreated("a1", startDate, endDate);
+        assertThat(deploys.size(), is(equalTo(2)));
+        }
+
+    @Test
+    public void getAllAppsUsingInForDateRange()
+        {
+        LocalDateTime startDateTime = LocalDate.now().atStartOfDay();
+        LocalDateTime endDateTime = LocalDate.now().plusDays(1).atStartOfDay();
+        Date startDate = Date.from(startDateTime.toInstant(ZoneOffset.UTC));
+        Date endDate = Date.from(endDateTime.toInstant(ZoneOffset.UTC));
+        List<Deployment> deploys = repo.findByApplicationIdInAndCreatedBetweenOrderByCreated(Arrays.asList("a1", "a2"), startDate, endDate);
+        assertThat(deploys.size(), is(equalTo(3)));
         }
     }
