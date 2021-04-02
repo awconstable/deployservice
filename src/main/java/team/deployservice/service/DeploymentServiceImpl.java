@@ -1,10 +1,12 @@
 package team.deployservice.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.deployservice.hierarchy.repo.HierarchyClient;
 import team.deployservice.model.*;
 import team.deployservice.repo.DeploymentRepo;
-import team.deployservice.hierarchy.repo.HierarchyClient;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -13,7 +15,7 @@ import java.util.*;
 @Service
 public class DeploymentServiceImpl implements DeploymentService
     {
-
+    private static final Logger log = LoggerFactory.getLogger(DeploymentServiceImpl.class);
     private final DeploymentRepo deploymentRepo;
     private final HierarchyClient hierarchyClient;
 
@@ -86,6 +88,14 @@ public class DeploymentServiceImpl implements DeploymentService
     public List<Deployment> listAllForApplication(String applicationId)
         {
         return deploymentRepo.findByApplicationId(applicationId);
+        }
+
+    @Override
+    public List<Deployment> listAllForHierarchy(String applicationId)
+        {
+        log.info("Loading all deployments in the hierarchy starting at applicationId {}", applicationId);
+        Collection<String> appIds = hierarchyClient.findChildIds(applicationId);
+        return deploymentRepo.findByApplicationIdInOrderByCreatedDesc(appIds);
         }
 
     @Override

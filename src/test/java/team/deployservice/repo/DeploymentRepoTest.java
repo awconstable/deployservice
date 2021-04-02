@@ -36,6 +36,8 @@ class DeploymentRepoTest extends MongoDBContainerTest
         repo.save(d2);
         Deployment d3 = new Deployment("d3", "deployment v3", "a2", rfcId, Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
         repo.save(d3);
+        Deployment d4 = new Deployment("d4", "deployment v4", "a3", rfcId, Date.from(Instant.now()), "test", new HashSet<>(Arrays.asList(c1, c2)));
+        repo.save(d4);
         }
 
     @AfterEach
@@ -78,6 +80,13 @@ class DeploymentRepoTest extends MongoDBContainerTest
         Date startDate = Date.from(startDateTime.toInstant(ZoneOffset.UTC));
         Date endDate = Date.from(endDateTime.toInstant(ZoneOffset.UTC));
         List<Deployment> deploys = repo.findByApplicationIdInAndCreatedBetweenOrderByCreated(Arrays.asList("a1", "a2"), startDate, endDate);
+        assertThat(deploys.size(), is(equalTo(3)));
+        }
+
+    @Test
+    public void getAllAppsUsingIn()
+        {
+        List<Deployment> deploys = repo.findByApplicationIdInOrderByCreatedDesc(Arrays.asList("a1", "a2"));
         assertThat(deploys.size(), is(equalTo(3)));
         }
     }

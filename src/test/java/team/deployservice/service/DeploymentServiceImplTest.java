@@ -378,6 +378,25 @@ class DeploymentServiceImplTest
         }
 
     @Test
+    void checkListHierarchy()
+        {
+        Deployment d1 =  setupDeployment("a1",1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        Deployment d2 =  setupDeployment("a2",1, 10, 10, 3, 10, 10, 3, 10, 10, 3, 10);
+        d1.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.MONTH);});
+        d2.getChanges().forEach(change -> {change.setLeadTimeSeconds(DORALevel.MONTH);});
+        List<Deployment> deploys = new ArrayList<>();
+        deploys.add(d1);
+        deploys.add(d2);
+        when(mockHierarchyClient.findChildIds("a1")).thenReturn(Arrays.asList("a1", "a2"));
+        when(mockdeploymentRepo.findByApplicationIdInOrderByCreatedDesc(anyCollection()))
+            .thenReturn(deploys);
+
+        List<Deployment> deployList = deploymentService.listAllForHierarchy("a1");
+
+        assertThat(deployList.size(), equalTo(2));
+        }
+
+    @Test
     void checkListAllWithDate()
         {
         String appId = "a1";

@@ -309,6 +309,27 @@ class DeploymentControllerV1Test
             .andExpect(status().isOk());
         verify(mockDeploymentService, times(1)).listAllForApplication(appId);
         }
+
+    @Test
+    void listforHierarchy() throws Exception
+        {
+        ZonedDateTime reportingDate = LocalDate.of(2020, 10, 10).atStartOfDay(ZoneId.of("UTC"));
+        String appId = "id123";
+        Deployment d1 = new Deployment("d1", "", "a1", "rfc1", Date.from(reportingDate.toInstant()), "", new HashSet<>());
+        Deployment d2 = new Deployment("d2", "", "a2", "rfc2", Date.from(reportingDate.toInstant()), "", new HashSet<>());
+        List<Deployment> deploys = new ArrayList<>();
+        deploys.add(d1);
+        deploys.add(d2);
+
+        when(mockDeploymentService.listAllForHierarchy(appId)).thenReturn(deploys);
+        
+        MvcResult result = mockMvc.perform(get("/api/v1/deployment/hierarchy/" + appId)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk()).andReturn();
+        String content = result.getResponse().getContentAsString();
+        verify(mockDeploymentService, times(1)).listAllForHierarchy(appId);
+        assertThat(content, is(equalTo("[{\"id\":null,\"deploymentId\":\"d1\",\"deploymentDesc\":\"\",\"applicationId\":\"a1\",\"rfcId\":\"rfc1\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"\",\"changes\":[],\"leadTimeSeconds\":0,\"leadTimePerfLevel\":null},{\"id\":null,\"deploymentId\":\"d2\",\"deploymentDesc\":\"\",\"applicationId\":\"a2\",\"rfcId\":\"rfc2\",\"created\":\"2020-10-10T00:00:00.000+00:00\",\"source\":\"\",\"changes\":[],\"leadTimeSeconds\":0,\"leadTimePerfLevel\":null}]")));
+        }
     
     @Test
     void listByAppAndDate() throws Exception

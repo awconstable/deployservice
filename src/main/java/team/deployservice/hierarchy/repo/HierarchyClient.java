@@ -12,4 +12,7 @@ public interface HierarchyClient
     {
         @RequestMapping(method = RequestMethod.GET, value = "/v2/hierarchy/children/application/ids/{slug}")
         Collection<String> findApplicationChildIds(@PathVariable("slug") String slug);
+
+        @RequestMapping(method = RequestMethod.GET, value = "/v2/hierarchy/children/ids/{slug}")
+        Collection<String> findChildIds(@PathVariable("slug") String slug);
     }

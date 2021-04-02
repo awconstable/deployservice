@@ -67,6 +67,13 @@ public class DeploymentControllerV1
             return deploymentService.listAllForApplication(id);
         }
 
+        @GetMapping("/deployment/hierarchy/{id}")
+        @ResponseStatus(HttpStatus.OK)
+        @ApiOperation(value = "List all deployments for a hierarchy", notes = "List all deployments in a hierarchy starting at node with application id", response = Deployment.class, responseContainer = "List")
+        public List<Deployment> listForHierarchy(@PathVariable @ApiParam(value = "The application id", required = true) String id){
+            return deploymentService.listAllForHierarchy(id);
+        }
+
         @GetMapping("/deployment/application/{id}/date/{date}")
         @ResponseStatus(HttpStatus.OK)
         @ApiOperation(value = "List all deployments for an application and date combination", notes = "List all deployments filtered by application id and date", response = Deployment.class, responseContainer = "List")

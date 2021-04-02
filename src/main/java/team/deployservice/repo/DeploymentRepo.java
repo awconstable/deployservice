@@ -16,6 +16,8 @@ public interface DeploymentRepo extends MongoRepository<Deployment, String>
         
         List<Deployment> findByApplicationId(String applicationId);
 
+        List<Deployment> findByApplicationIdInOrderByCreatedDesc(Collection<String> applicationIds);
+
         List<Deployment> findByApplicationIdAndCreatedBetweenOrderByCreated(String applicationId, Date start, Date end);
 
         List<Deployment> findByApplicationIdInAndCreatedBetweenOrderByCreated(Collection<String> applicationIds, Date start, Date end);
